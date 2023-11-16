@@ -6,7 +6,7 @@ const env = {
   DB_USER: "upskill_user",
   DB_NAME: "upskilling_sessions",
   HOST: "localhost",
-  DB_DIALECT: "mysql"
+  DB_DIALECT: "mysql",
 };
 
-module.exports =  env;
+module.exports = env;

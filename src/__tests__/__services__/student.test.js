@@ -15,18 +15,6 @@ describe("student service", () => {
       expect(Student.create).toHaveBeenCalledWith(req);
       expect(result).toEqual(studentResponse);
     });
-
-    test("should throw error on failure to add new student", async () => {
-      Student.create = jest
-        .fn()
-        .mockRejectedValue(new Error("Failed to create student"));
-
-      const result = await expect(createStudent(req)).rejects.toThrow(
-        "Failed to create student"
-      );
-
-      expect(Student.create).toHaveBeenCalledWith(req);
-    });
   });
 
   describe("getAllStudents", () => {

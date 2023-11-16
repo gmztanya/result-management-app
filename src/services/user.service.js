@@ -1,19 +1,11 @@
 const User = require("../models/user.model");
 
 const createUser = async (req) => {
-  try {
-    return User.create(req);
-  } catch (e) {
-    throw new Error(e);
-  }
+  return User.create(req);
 };
 
 const findUserByUsername = async (username) => {
-  try {
-    return User.findOne({ where: { username } });
-  } catch (e) {
-    throw new Error(e);
-  }
+  return User.findOne({ where: { username } });
 };
 
 module.exports = { createUser, findUserByUsername };

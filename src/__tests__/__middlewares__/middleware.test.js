@@ -10,7 +10,7 @@ const req = {
   },
   user: {
     userType: "",
-  }
+  },
 };
 
 const res = {
@@ -72,12 +72,11 @@ describe("auth-token middleware", () => {
 });
 
 describe("checkUserRole middleware", () => {
-
   test("should call the next() if usertype is teacher", () => {
     const next = jest.fn();
     req.user.userType = "teacher";
 
-    const middleware = checkUserRole('teacher');
+    const middleware = checkUserRole("teacher");
     middleware(req, res, next);
 
     expect(next).toHaveBeenCalled();
@@ -97,5 +96,5 @@ describe("checkUserRole middleware", () => {
 
     expect(res.status).toHaveBeenCalledWith(STATUS_CODES.FORBIDDEN);
     expect(next).not.toHaveBeenCalled();
-  })
-})
+  });
+});

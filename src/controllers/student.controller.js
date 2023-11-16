@@ -18,5 +18,4 @@ const getStudentByNameAndRollNo = async (req, res) => {
   }
 };
 
-
 module.exports = { getStudentByNameAndRollNo };

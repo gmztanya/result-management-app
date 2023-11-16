@@ -17,7 +17,7 @@ const sequelize = new Sequelize(
       },
       timestamps: false,
     },
-  }
+  },
 );
 
 module.exports = sequelize;

@@ -10,25 +10,25 @@ const teacherController = require("../controllers/teacher.controller");
 router.post(
   "/add-student",
   [authenticateToken, checkUserRole(ROLE.TEACHER)],
-  teacherController.addStudent
+  teacherController.addStudent,
 );
 
 router.get(
   "/list-students",
   [authenticateToken, checkUserRole(ROLE.TEACHER)],
-  teacherController.listStudents
+  teacherController.listStudents,
 );
 
 router.delete(
   "/delete-student/:rollNumber",
   [authenticateToken, checkUserRole(ROLE.TEACHER)],
-  teacherController.deleteStudent
+  teacherController.deleteStudent,
 );
 
 router.put(
   "/edit-student/:rollNumber",
   [authenticateToken, checkUserRole(ROLE.TEACHER)],
-  teacherController.editStudent
+  teacherController.editStudent,
 );
 
 module.exports = router;

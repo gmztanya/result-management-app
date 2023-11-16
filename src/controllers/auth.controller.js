@@ -34,8 +34,8 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   // remove token
   res
-  .status(STATUS_CODES.SUCCESS)
-  .json({ message: "Logged out successfully" });
+    .status(STATUS_CODES.SUCCESS)
+    .json({ message: "Logged out successfully" });
 };
 
 module.exports = { login, logout };

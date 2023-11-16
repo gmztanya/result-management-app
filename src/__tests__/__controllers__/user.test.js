@@ -10,10 +10,10 @@ const req = {
   body: user,
 };
 
-const res = {
-  status: jest.fn().mockReturnThis(),
-  json: jest.fn(),
-};
+// const res = {
+//   status: jest.fn().mockReturnThis(),
+//   json: jest.fn()
+// }
 
 jest.mock("../../services/user.service", () => ({
   findUserByUsername: jest.fn(),
@@ -24,7 +24,6 @@ describe("user", () => {
   describe("register user route", () => {
     describe("given a user, ", () => {
       test("should register the user and return a status code of 201", async () => {
-
         const { username } = req.body;
 
         findUserByUsername.mockImplementation(() => null);
@@ -34,7 +33,7 @@ describe("user", () => {
           .post("/user/register")
           .send(user);
 
-        expect(findUserByUsername).toHaveBeenCalledWith(username);  
+        expect(findUserByUsername).toHaveBeenCalledWith(username);
         expect(createUser).toHaveBeenCalledWith(req.body);
 
         expect(statusCode).toBe(STATUS_CODES.RESOURCE_CREATED);
@@ -42,7 +41,6 @@ describe("user", () => {
       });
 
       test("should return a status code of 500 if user already exists", async () => {
-
         const { username } = req.body;
 
         findUserByUsername.mockImplementation(() => userResponse);
@@ -52,7 +50,7 @@ describe("user", () => {
           .post("/user/register")
           .send(user);
 
-        expect(findUserByUsername).toHaveBeenCalledWith(username);  
+        expect(findUserByUsername).toHaveBeenCalledWith(username);
         expect(createUser).not.toHaveBeenCalledWith(user);
 
         expect(statusCode).toBe(STATUS_CODES.SERVER_ERROR);

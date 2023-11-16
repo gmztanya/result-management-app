@@ -1,6 +1,5 @@
 const config = require("config");
 const jwt = require("jsonwebtoken");
-const { TokenExpiredError } = require("jsonwebtoken");
 
 const { signJwt, verifyJwt } = require("../../utils/jwt.utils");
 const { user } = require("../../__mocks__/user.mocks");
@@ -38,6 +37,5 @@ describe("db utils", () => {
       expect(result.decodedToken).toEqual(decodedToken);
       expect(jwt.verify).toHaveBeenCalledWith(token, secretKey);
     });
-
   });
 });

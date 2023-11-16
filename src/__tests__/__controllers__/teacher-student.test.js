@@ -4,7 +4,6 @@ const supertest = require("supertest");
 const STATUS_CODES = require("../../constants/status-codes.constants");
 
 const { authenticateToken } = require("../../middleware/auth-token.middleware");
-const { checkUserRole } = require("../../middleware/user-guard.middleware");
 
 const {
   createStudent,
@@ -27,7 +26,7 @@ jest.mock("../../middleware/auth-token.middleware", () => ({
   authenticateToken: jest.fn(),
 }));
 jest.mock("../../middleware/user-guard.middleware", () => ({
-  checkUserRole: jest.fn((_role) => (req, res, next) => next()),
+  checkUserRole: jest.fn((_role) => (_req, _res, next) => next()),
 }));
 jest.mock("../../services/student.service", () => ({
   createStudent: jest.fn(),
@@ -38,7 +37,7 @@ jest.mock("../../services/student.service", () => ({
 
 describe("teacher controller", () => {
   beforeEach(() => {
-    authenticateToken.mockImplementation((req, res, next) => next());
+    authenticateToken.mockImplementation((_req, _res, next) => next());
   });
   describe("POST/add-student route", () => {
     describe("given a student object, ", () => {
@@ -139,7 +138,7 @@ describe("teacher controller", () => {
         expect(studentResp.destroy).toHaveBeenCalled();
         expect(statusCode).toBe(STATUS_CODES.SUCCESS);
         expect(body).toEqual(
-          `Student record - ${studentResp.name}-${studentResp.rollNumber} deleted.`
+          `Student record - ${studentResp.name}-${studentResp.rollNumber} deleted.`,
         );
       });
 
@@ -174,7 +173,7 @@ describe("teacher controller", () => {
         expect(getStudentByRollNo).toHaveBeenCalledWith(rollNumber);
         expect(statusCode).toBe(STATUS_CODES.SERVER_ERROR);
         expect(studentResp.destroy).not.toHaveBeenCalled();
-        expect(body.error).toEqual(`Failed to delete student record.`);
+        expect(body.error).toEqual("Failed to delete student record.");
       });
     });
   });
@@ -197,7 +196,7 @@ describe("teacher controller", () => {
         expect(studentRespMock.update).toHaveBeenCalledWith(editRequest);
         expect(statusCode).toBe(STATUS_CODES.RESOURCE_CREATED);
         expect(body).toEqual(
-          `Student record - ${studentRespMock.name}-${studentRespMock.rollNumber} edited successfully.`
+          `Student record - ${studentRespMock.name}-${studentRespMock.rollNumber} edited successfully.`,
         );
       });
 
@@ -232,7 +231,7 @@ describe("teacher controller", () => {
         expect(getStudentByRollNo).toHaveBeenCalledWith(rollNumber);
         expect(statusCode).toBe(STATUS_CODES.SERVER_ERROR);
         expect(studentRespMock.update).not.toHaveBeenCalled();
-        expect(body.error).toEqual(`Failed to edit student record.`);
+        expect(body.error).toEqual("Failed to edit student record.");
       });
     });
   });
@@ -240,23 +239,23 @@ describe("teacher controller", () => {
 
 describe("studnt controller", () => {
   beforeEach(() => {
-    authenticateToken.mockImplementation((req, res, next) => next());
+    authenticateToken.mockImplementation((_req, _res, next) => next());
   });
   describe("GET/search route", () => {
     describe("given a rollNumber and name", () => {
       test("should get the student record", async () => {
         getStudentByNameAndRollNo.mockResolvedValue(studentResponse);
-  
+
         const { statusCode, body } = await supertest(app)
           .get("/student/search")
           .set("Authorization", authorization)
           .send();
-  
+
         expect(statusCode).toBe(STATUS_CODES.SUCCESS);
         expect(body).toEqual(studentResponse);
         expect(getStudentByNameAndRollNo).toHaveBeenCalled();
       });
-  
+
       test("should return 404 if student record does not exist", async () => {
         const { rollNumber, name } = req.body;
 
@@ -286,7 +285,6 @@ describe("studnt controller", () => {
         expect(statusCode).toBe(STATUS_CODES.SERVER_ERROR);
         expect(body.error).toEqual("Failed to fetch student.");
       });
-    })
-
+    });
   });
-})
+});

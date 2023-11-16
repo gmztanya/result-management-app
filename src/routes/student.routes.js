@@ -8,8 +8,8 @@ const studentController = require("../controllers/student.controller");
 
 router.get(
   "/search",
-  [authenticateToken, checkUserRole('student')],
-  studentController.getStudentByNameAndRollNo
+  [authenticateToken, checkUserRole("student")],
+  studentController.getStudentByNameAndRollNo,
 );
 
 module.exports = router;

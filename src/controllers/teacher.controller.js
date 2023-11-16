@@ -13,7 +13,7 @@ const addStudent = async (req, res) => {
 
     const student = await studentService.createStudent(req.body);
     console.info(
-      `Student ${student.name}-${student.rollNumber} added successfully.`
+      `Student ${student.name}-${student.rollNumber} added successfully.`,
     );
 
     res.status(STATUS_CODES.RESOURCE_CREATED).json(student);
@@ -75,7 +75,7 @@ const editStudent = async (req, res) => {
     res
       .status(STATUS_CODES.RESOURCE_CREATED)
       .json(
-        `Student record - ${student.name}-${student.rollNumber} edited successfully.`
+        `Student record - ${student.name}-${student.rollNumber} edited successfully.`,
       );
   } catch (error) {
     // console.error(error);

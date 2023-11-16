@@ -5,7 +5,6 @@ const { userLogin, userResponse } = require("../../__mocks__/user.mocks");
 const { signJwt } = require("../../utils/jwt.utils");
 const { findUserByUsername } = require("../../services/user.service");
 
-
 const app = require("../../utils/server.utils");
 const STATUS_CODES = require("../../constants/status-codes.constants");
 
@@ -46,7 +45,7 @@ describe("auth controller", () => {
       expect(findUserByUsername).toHaveBeenCalledWith(username);
       expect(signJwt).toHaveBeenCalledWith(
         { userType: userResponse.userType },
-        tokenExpiry
+        tokenExpiry,
       );
       expect(statusCode).toBe(STATUS_CODES.SUCCESS);
       expect(body.token).toBe(token);
@@ -68,19 +67,19 @@ describe("auth controller", () => {
     });
 
     test("should return 401 if the password does not match", async () => {
-      const req = {
+      const reqMock = {
         body: {
           username: "john123",
           password: "test",
         },
       };
-      const { username, password } = req.body;
+      const { username, password } = reqMock.body;
       findUserByUsername.mockReturnValue(userResponse);
       signJwt.mockReturnValue(null);
 
       const { statusCode, body } = await supertest(app)
         .post("/auth/login")
-        .send(req.body);
+        .send(reqMock.body);
 
       expect(findUserByUsername).toHaveBeenCalledWith(username);
       expect(password).not.toBe(userResponse.password);
@@ -114,5 +113,5 @@ describe("auth controller", () => {
       expect(statusCode).toBe(STATUS_CODES.SUCCESS);
       expect(body.message).toBe("Logged out successfully");
     });
-  })
+  });
 });

@@ -8,10 +8,10 @@ app.listen(PORT, () => {
 });
 
 sequelize
-.sync()
-.then(() => {
-  console.info('Database initialization success')
-})
-.catch(err => {
-  console.error("Database initialization error:", err.name)
-})
+  .sync()
+  .then(() => {
+    console.info("Database initialization success");
+  })
+  .catch(err => {
+    console.error("Database initialization error:", err.name);
+  });
