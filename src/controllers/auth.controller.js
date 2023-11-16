@@ -1,6 +1,6 @@
 const config = require("config");
 const jwtUtils = require("../utils/jwt.utils");
-const statusCodes = require("../constants/status-codes.constants");
+const STATUS_CODES = require("../constants/status-codes.constants");
 const userService = require("../services/user.service");
 
 const tokenExpiry = config.get("JWT_TOKEN_EXPIRES_IN");
@@ -12,35 +12,30 @@ const login = async (req, res) => {
 
     if (!user) {
       return res
-        .status(statusCodes.UNAUTHORIZED)
+        .status(STATUS_CODES.UNAUTHORIZED)
         .json({ error: "Invalid username or password" });
     }
 
     if (user.password !== password) {
       return res
-        .status(statusCodes.UNAUTHORIZED)
+        .status(STATUS_CODES.UNAUTHORIZED)
         .json({ error: "Invalid username or password" });
     }
 
     const token = jwtUtils.signJwt({ userType: user.userType }, tokenExpiry);
 
-    res.status(statusCodes.SUCCESS).json({ token });
+    res.status(STATUS_CODES.SUCCESS).json({ token });
   } catch (error) {
     // console.error(error);
-    res.status(statusCodes.SERVER_ERROR).json({ error: "Login failed" });
+    res.status(STATUS_CODES.SERVER_ERROR).json({ error: "Login failed" });
   }
 };
 
 const logout = async (req, res) => {
-  try {
-    // remove token
-    res
-      .status(statusCodes.SUCCESS)
-      .json({ message: "Logged out successfully" });
-  } catch (error) {
-    // console.error(error);
-    res.status(statusCodes.SERVER_ERROR).json({ error: "Logout failed" });
-  }
+  // remove token
+  res
+  .status(STATUS_CODES.SUCCESS)
+  .json({ message: "Logged out successfully" });
 };
 
 module.exports = { login, logout };

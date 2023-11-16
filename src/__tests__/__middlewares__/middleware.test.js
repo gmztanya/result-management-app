@@ -1,8 +1,8 @@
 const { authenticateToken } = require("../../middleware/auth-token.middleware");
-const { teacherGuard } = require("../../middleware/teacher-guard.middleware");
+const { checkUserRole } = require("../../middleware/user-guard.middleware");
 const { verifyJwt } = require("../../utils/jwt.utils");
 
-const statusCodes = require("../../constants/status-codes.constants");
+const STATUS_CODES = require("../../constants/status-codes.constants");
 
 const req = {
   headers: {
@@ -49,7 +49,7 @@ describe("auth-token middleware", () => {
     verifyJwt.mockRejectedValue(new Error());
     authenticateToken(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(statusCodes.UNAUTHORIZED);
+    expect(res.status).toHaveBeenCalledWith(STATUS_CODES.UNAUTHORIZED);
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -66,18 +66,19 @@ describe("auth-token middleware", () => {
 
     authenticateToken(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(statusCodes.UNAUTHORIZED);
+    expect(res.status).toHaveBeenCalledWith(STATUS_CODES.UNAUTHORIZED);
     expect(next).not.toHaveBeenCalled();
   });
 });
 
-describe("teacher guard middleware", () => {
+describe("checkUserRole middleware", () => {
 
   test("should call the next() if usertype is teacher", () => {
     const next = jest.fn();
     req.user.userType = "teacher";
 
-    teacherGuard(req, res, next);
+    const middleware = checkUserRole('teacher');
+    middleware(req, res, next);
 
     expect(next).toHaveBeenCalled();
   });
@@ -91,9 +92,10 @@ describe("teacher guard middleware", () => {
       status: jest.fn(() => res),
     };
 
-    teacherGuard(req, res, next);
+    const middleware = checkUserRole("teacher");
+    middleware(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(statusCodes.FORBIDDEN);
+    expect(res.status).toHaveBeenCalledWith(STATUS_CODES.FORBIDDEN);
     expect(next).not.toHaveBeenCalled();
   })
 })

@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/db.utils");
+const ROLE = require("../constants/user.constants");
 
 const User = sequelize.define("User", {
   id: {
@@ -17,7 +18,7 @@ const User = sequelize.define("User", {
     allowNull: false,
   },
   userType: {
-    type: DataTypes.ENUM("teacher", "student"),
+    type: DataTypes.ENUM(ROLE.TEACHER, ROLE.STUDENT),
     allowNull: false,
   },
 });

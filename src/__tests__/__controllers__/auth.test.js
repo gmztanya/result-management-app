@@ -7,7 +7,7 @@ const { findUserByUsername } = require("../../services/user.service");
 
 
 const app = require("../../utils/server.utils");
-const statusCodes = require("../../constants/status-codes.constants");
+const STATUS_CODES = require("../../constants/status-codes.constants");
 
 const req = {
   body: userLogin,
@@ -48,7 +48,7 @@ describe("auth controller", () => {
         { userType: userResponse.userType },
         tokenExpiry
       );
-      expect(statusCode).toBe(statusCodes.SUCCESS);
+      expect(statusCode).toBe(STATUS_CODES.SUCCESS);
       expect(body.token).toBe(token);
     });
 
@@ -62,7 +62,7 @@ describe("auth controller", () => {
         .send(req.body);
 
       expect(findUserByUsername).toHaveBeenCalledWith(username);
-      expect(statusCode).toBe(statusCodes.UNAUTHORIZED);
+      expect(statusCode).toBe(STATUS_CODES.UNAUTHORIZED);
       expect(body.error).toBe("Invalid username or password");
       expect(signJwt).not.toHaveBeenCalled();
     });
@@ -84,7 +84,7 @@ describe("auth controller", () => {
 
       expect(findUserByUsername).toHaveBeenCalledWith(username);
       expect(password).not.toBe(userResponse.password);
-      expect(statusCode).toBe(statusCodes.UNAUTHORIZED);
+      expect(statusCode).toBe(STATUS_CODES.UNAUTHORIZED);
       expect(body.error).toBe("Invalid username or password");
       expect(signJwt).not.toHaveBeenCalled();
     });
@@ -99,9 +99,20 @@ describe("auth controller", () => {
         .send(req.body);
 
       expect(findUserByUsername).toHaveBeenCalledWith(username);
-      expect(statusCode).toBe(statusCodes.SERVER_ERROR);
+      expect(statusCode).toBe(STATUS_CODES.SERVER_ERROR);
       expect(body.error).toBe("Login failed");
       expect(signJwt).not.toHaveBeenCalled();
     });
   });
+
+  describe("POST/logout route", () => {
+    test("should call logout", async () => {
+      const { statusCode, body } = await supertest(app)
+        .post("/auth/logout")
+        .send(req.body);
+
+      expect(statusCode).toBe(STATUS_CODES.SUCCESS);
+      expect(body.message).toBe("Logged out successfully");
+    });
+  })
 });

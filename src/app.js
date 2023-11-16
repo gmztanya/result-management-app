@@ -13,5 +13,5 @@ sequelize
   console.info('Database initialization success')
 })
 .catch(err => {
-  console.error("Database initialization error:", error.name)
+  console.error("Database initialization error:", err.name)
 })

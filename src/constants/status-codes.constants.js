@@ -1,4 +1,4 @@
-const status = {
+const STATUS_CODES = {
   SUCCESS: 200,
   RESOURCE_CREATED: 201,
   SERVER_ERROR: 500,
@@ -7,4 +7,4 @@ const status = {
   UNAUTHORIZED: 401,
 };
 
-module.exports = status;
+module.exports = STATUS_CODES;

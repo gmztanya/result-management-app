@@ -1,15 +1,16 @@
 const app = require("../../utils/server.utils");
 const supertest = require("supertest");
 
-const statusCodes = require("../../constants/status-codes.constants");
+const STATUS_CODES = require("../../constants/status-codes.constants");
 
 const { authenticateToken } = require("../../middleware/auth-token.middleware");
-const { teacherGuard } = require("../../middleware/teacher-guard.middleware");
+const { checkUserRole } = require("../../middleware/user-guard.middleware");
 
 const {
   createStudent,
   getAllStudents,
   getStudentByRollNo,
+  getStudentByNameAndRollNo,
 } = require("../../services/student.service");
 const { student, studentResponse } = require("../../__mocks__/student.mocks");
 
@@ -22,26 +23,22 @@ const req = {
 
 const authorization = "Bearer xxxxxxxxxx";
 
-const setupMiddlewareMocks = () => {
-  authenticateToken.mockImplementation((req, res, next) => next());
-  teacherGuard.mockImplementation((req, res, next) => next());
-};
-
 jest.mock("../../middleware/auth-token.middleware", () => ({
   authenticateToken: jest.fn(),
 }));
-jest.mock("../../middleware/teacher-guard.middleware", () => ({
-  teacherGuard: jest.fn(),
+jest.mock("../../middleware/user-guard.middleware", () => ({
+  checkUserRole: jest.fn((_role) => (req, res, next) => next()),
 }));
 jest.mock("../../services/student.service", () => ({
   createStudent: jest.fn(),
   getAllStudents: jest.fn(),
   getStudentByRollNo: jest.fn(),
+  getStudentByNameAndRollNo: jest.fn(),
 }));
 
 describe("teacher controller", () => {
   beforeEach(() => {
-    setupMiddlewareMocks();
+    authenticateToken.mockImplementation((req, res, next) => next());
   });
   describe("POST/add-student route", () => {
     describe("given a student object, ", () => {
@@ -59,7 +56,7 @@ describe("teacher controller", () => {
         expect(getStudentByRollNo).toHaveBeenCalledWith(rollNumber);
         expect(createStudent).toHaveBeenCalledWith(req.body);
 
-        expect(statusCode).toBe(statusCodes.RESOURCE_CREATED);
+        expect(statusCode).toBe(STATUS_CODES.RESOURCE_CREATED);
         expect(body).toEqual(studentResponse);
       });
 
@@ -77,7 +74,7 @@ describe("teacher controller", () => {
         expect(getStudentByRollNo).toHaveBeenCalledWith(rollNumber);
         expect(createStudent).not.toHaveBeenCalledWith(req.body);
 
-        expect(statusCode).toBe(statusCodes.SERVER_ERROR);
+        expect(statusCode).toBe(STATUS_CODES.SERVER_ERROR);
         expect(body.error).toEqual(`student ${rollNumber} already exists`);
       });
     });
@@ -92,7 +89,7 @@ describe("teacher controller", () => {
           .set("Authorization", authorization)
           .send({});
 
-        expect(statusCode).toBe(statusCodes.SERVER_ERROR);
+        expect(statusCode).toBe(STATUS_CODES.SERVER_ERROR);
         expect(body.error).toEqual("Failed to add student.");
       });
     });
@@ -107,7 +104,7 @@ describe("teacher controller", () => {
         .set("Authorization", authorization)
         .send();
 
-      expect(statusCode).toBe(statusCodes.SUCCESS);
+      expect(statusCode).toBe(STATUS_CODES.SUCCESS);
       expect(body).toEqual([studentResponse]);
       expect(getAllStudents).toHaveBeenCalled();
     });
@@ -120,7 +117,7 @@ describe("teacher controller", () => {
         .set("Authorization", authorization)
         .send();
 
-      expect(statusCode).toBe(statusCodes.SERVER_ERROR);
+      expect(statusCode).toBe(STATUS_CODES.SERVER_ERROR);
       expect(body.error).toEqual("Failed to fetch list of students.");
     });
   });
@@ -140,7 +137,7 @@ describe("teacher controller", () => {
 
         expect(getStudentByRollNo).toHaveBeenCalledWith(rollNumber);
         expect(studentResp.destroy).toHaveBeenCalled();
-        expect(statusCode).toBe(statusCodes.SUCCESS);
+        expect(statusCode).toBe(STATUS_CODES.SUCCESS);
         expect(body).toEqual(
           `Student record - ${studentResp.name}-${studentResp.rollNumber} deleted.`
         );
@@ -158,7 +155,7 @@ describe("teacher controller", () => {
           .send();
 
         expect(getStudentByRollNo).toHaveBeenCalledWith(rollNumber);
-        expect(statusCode).toBe(statusCodes.NOT_FOUND);
+        expect(statusCode).toBe(STATUS_CODES.NOT_FOUND);
         expect(studentResp.destroy).not.toHaveBeenCalled();
         expect(body.error).toEqual(`No records found for ${rollNumber}`);
       });
@@ -175,7 +172,7 @@ describe("teacher controller", () => {
           .send();
 
         expect(getStudentByRollNo).toHaveBeenCalledWith(rollNumber);
-        expect(statusCode).toBe(statusCodes.SERVER_ERROR);
+        expect(statusCode).toBe(STATUS_CODES.SERVER_ERROR);
         expect(studentResp.destroy).not.toHaveBeenCalled();
         expect(body.error).toEqual(`Failed to delete student record.`);
       });
@@ -198,7 +195,7 @@ describe("teacher controller", () => {
 
         expect(getStudentByRollNo).toHaveBeenCalledWith(rollNumber);
         expect(studentRespMock.update).toHaveBeenCalledWith(editRequest);
-        expect(statusCode).toBe(statusCodes.RESOURCE_CREATED);
+        expect(statusCode).toBe(STATUS_CODES.RESOURCE_CREATED);
         expect(body).toEqual(
           `Student record - ${studentRespMock.name}-${studentRespMock.rollNumber} edited successfully.`
         );
@@ -216,7 +213,7 @@ describe("teacher controller", () => {
           .send(req.body);
 
         expect(getStudentByRollNo).toHaveBeenCalledWith(rollNumber);
-        expect(statusCode).toBe(statusCodes.NOT_FOUND);
+        expect(statusCode).toBe(STATUS_CODES.NOT_FOUND);
         expect(studentRespMock.update).not.toHaveBeenCalled();
         expect(body.error).toEqual(`No records found for ${rollNumber}`);
       });
@@ -233,10 +230,63 @@ describe("teacher controller", () => {
           .send(req.body);
 
         expect(getStudentByRollNo).toHaveBeenCalledWith(rollNumber);
-        expect(statusCode).toBe(statusCodes.SERVER_ERROR);
+        expect(statusCode).toBe(STATUS_CODES.SERVER_ERROR);
         expect(studentRespMock.update).not.toHaveBeenCalled();
         expect(body.error).toEqual(`Failed to edit student record.`);
       });
     });
   });
 });
+
+describe("studnt controller", () => {
+  beforeEach(() => {
+    authenticateToken.mockImplementation((req, res, next) => next());
+  });
+  describe("GET/search route", () => {
+    describe("given a rollNumber and name", () => {
+      test("should get the student record", async () => {
+        getStudentByNameAndRollNo.mockResolvedValue(studentResponse);
+  
+        const { statusCode, body } = await supertest(app)
+          .get("/student/search")
+          .set("Authorization", authorization)
+          .send();
+  
+        expect(statusCode).toBe(STATUS_CODES.SUCCESS);
+        expect(body).toEqual(studentResponse);
+        expect(getStudentByNameAndRollNo).toHaveBeenCalled();
+      });
+  
+      test("should return 404 if student record does not exist", async () => {
+        const { rollNumber, name } = req.body;
+
+        getStudentByNameAndRollNo.mockResolvedValue(null);
+
+        const { statusCode, body } = await supertest(app)
+          .get("/student/search")
+          .set("Authorization", authorization)
+          .send(req.body);
+
+        expect(getStudentByNameAndRollNo).toHaveBeenCalledWith(rollNumber, name);
+        expect(statusCode).toBe(STATUS_CODES.NOT_FOUND);
+        expect(body.error).toEqual(`No records found for ${rollNumber} - ${name}`);
+      });
+
+      test("should return 500 if update operation fails", async () => {
+        const { rollNumber, name } = req.body;
+
+        getStudentByNameAndRollNo.mockRejectedValue(new Error());
+
+        const { statusCode, body } = await supertest(app)
+          .get("/student/search")
+          .set("Authorization", authorization)
+          .send(req.body);
+
+        expect(getStudentByNameAndRollNo).toHaveBeenCalledWith(rollNumber, name);
+        expect(statusCode).toBe(STATUS_CODES.SERVER_ERROR);
+        expect(body.error).toEqual("Failed to fetch student.");
+      });
+    })
+
+  });
+})

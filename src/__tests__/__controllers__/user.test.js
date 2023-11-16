@@ -4,7 +4,7 @@ const { createUser, findUserByUsername } = require("../../services/user.service"
 const { user, userResponse } = require("../../__mocks__/user.mocks");
 
 const app = require("../../utils/server.utils");
-const statusCodes = require("../../constants/status-codes.constants");
+const STATUS_CODES = require("../../constants/status-codes.constants");
 
 const req = {
   body: user,
@@ -37,7 +37,7 @@ describe("user", () => {
         expect(findUserByUsername).toHaveBeenCalledWith(username);  
         expect(createUser).toHaveBeenCalledWith(req.body);
 
-        expect(statusCode).toBe(statusCodes.RESOURCE_CREATED);
+        expect(statusCode).toBe(STATUS_CODES.RESOURCE_CREATED);
         expect(body).toEqual(userResponse);
       });
 
@@ -55,7 +55,7 @@ describe("user", () => {
         expect(findUserByUsername).toHaveBeenCalledWith(username);  
         expect(createUser).not.toHaveBeenCalledWith(user);
 
-        expect(statusCode).toBe(statusCodes.SERVER_ERROR);
+        expect(statusCode).toBe(STATUS_CODES.SERVER_ERROR);
         expect(body.error).toEqual(`user ${user.username} already exists`);
       });
     });
@@ -69,7 +69,7 @@ describe("user", () => {
           .post("/user/register")
           .send({});
 
-        expect(statusCode).toBe(statusCodes.SERVER_ERROR);
+        expect(statusCode).toBe(STATUS_CODES.SERVER_ERROR);
         expect(body.error).toEqual("Failed to add user.");
       });
     });
