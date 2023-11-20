@@ -39,8 +39,8 @@ This project requires [Node.js](https://nodejs.org/) v16+ to run.
 
 ## API Endpoints
 
-#### **POST /user/register**: Register Student and Teacher users.
-Authorization token - not required.
+#### _1. **POST /user/register**: Register Student and Teacher users._
+Authorization token - not required. <br />
 Request Body (as JSON) sample - 
  ```
 {
@@ -52,8 +52,8 @@ Request Body (as JSON) sample -
  ```
 where userType can be "teacher" or "student"
 
-#### **POST /auth/login**: To login with the registered user
-Authorization token - not required.
+#### _2. **POST /auth/login**: To login with the registered user_
+Authorization token - not required. <br />
 Request Body (as JSON) sample - 
  ```
 {
@@ -70,8 +70,8 @@ pm.environment.set("authorization", 'Bearer ' + jsonData.token);
 >For subsequent requests, go to **Headers**, and add **Authorization** followed by {{authorization}} as the value. 
 If you are adding the Authorization value directly, without setting it as an environment variable, you can copy the token we receive in the auth/login response and paste it as the header value. Make sure to prefix it with 'Bearer' string. e.g. **Bearer xxxxx**
 
-#### **POST /auth/logout**: To logout the registered user
-Authorization token - not required.
+#### _3. **POST /auth/logout**: To logout the registered user_
+Authorization token - not required. <br />
 Request Body - not required. 
 > added this API to clear the authorization token. In case you added the token in the enviroment variables, you can make use of the below script to empty its value.
 ```
@@ -80,8 +80,8 @@ pm.environment.set("authorization", '');
 
 ### **Teacher APIs**
 
-#### **POST /teacher/add-student**: To add student records 
-Authorization token - required. Added as a header - "Authorization". 
+#### _1. **POST /teacher/add-student**: To add student records_ 
+Authorization token - required. Added as a header - "Authorization". <br />
 Request Body (as JSON) sample - 
  ```
 {
@@ -93,29 +93,29 @@ Request Body (as JSON) sample -
 }
  ```
 
-#### **GET /teacher/list-students**: To get the list of student records 
-Authorization token - required. Added as a header - "Authorization". 
-Request Body - not required
+#### _2. **GET /teacher/list-students**: To get the list of student records_ 
+Authorization token - required. Added as a header - "Authorization". <br />
+Request Body - not required <br />
 
-#### **DELETE /teacher/delete-student/{{rollNumber}}**: To delete a particular student record
-Authorization token - required. Added as a header - "Authorization". 
-Request Body - not required. 
-RollNumber is passed in the url. 
+#### _3. **DELETE /teacher/delete-student/{{rollNumber}}**: To delete a particular student record_
+Authorization token - required. Added as a header - "Authorization". <br />
+Request Body - not required. <br />
+RollNumber is passed in the url. <br />
 
-#### **PUT /teacher/edit-student/{{rollNumber}}**: To edit a particular student record
-Authorization token - required. Added as a header - "Authorization". 
+#### _4. **PUT /teacher/edit-student/{{rollNumber}}**: To edit a particular student record_
+Authorization token - required. Added as a header - "Authorization". <br />
 Request Body - (as JSON) sample - 
  ```
 {
     "score": "100"
 }
  ```
- RollNumber is passed in the url.
+ RollNumber is passed in the url. <br />
  
 ### **Student APIs**
 
-#### **POST /student/search**: To search a particular student record
-Authorization token - required. Added as a header - "Authorization". 
+#### _1. **POST /student/search**: To search a particular student record_
+Authorization token - required. Added as a header - "Authorization". <br />
 Request Body - (as JSON) sample - 
  ```
 {
@@ -123,8 +123,8 @@ Request Body - (as JSON) sample -
     "name": "Mitch"
 }
  ```
-#### **POST /student/send-mail**: To email the student score to a particular student
-Authorization token - required. Added as a header - "Authorization". 
+#### _2. **POST /student/send-mail**: To email the student score to a particular student_
+Authorization token - required. Added as a header - "Authorization". <br />
 Request Body - (as JSON) sample - 
  ```
 {
