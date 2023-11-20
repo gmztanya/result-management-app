@@ -7,6 +7,10 @@ const env = {
   DB_NAME: "test",
   HOST: "localhost",
   DB_DIALECT: "mysql",
+  EMAIL: {
+    USERNAME: "xxxxx@gmail.com",
+    PASS: "xxxxxx",
+  },
 };
 
 module.exports = env;

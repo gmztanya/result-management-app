@@ -22,11 +22,11 @@ const login = async (req, res) => {
         .json({ error: "Invalid username or password" });
     }
 
-    const token = jwtUtils.signJwt({ userType: user.userType }, tokenExpiry);
+    const token = jwtUtils.signJwt({ userType: user.userType, email: user.email }, tokenExpiry);
 
     res.status(STATUS_CODES.SUCCESS).json({ token });
   } catch (error) {
-    // console.error(error);
+    console.error(error);
     res.status(STATUS_CODES.SERVER_ERROR).json({ error: "Login failed" });
   }
 };

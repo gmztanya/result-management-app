@@ -7,6 +7,10 @@ const env = {
   DB_NAME: "upskilling_sessions",
   HOST: "localhost",
   DB_DIALECT: "mysql",
+  EMAIL: {
+    USERNAME: "utest01012000@gmail.com", // can be replaced with any gmail account.
+    PASS: "ltnrcqgmiudkhqtw", // set app password for the gmail account
+  },
 };
 
 module.exports = env;

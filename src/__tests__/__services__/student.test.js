@@ -1,6 +1,12 @@
 const Student = require("../../models/student.model");
 const { student, studentResponse } = require("../../__mocks__/student.mocks");
-const { createStudent, getAllStudents, getStudentByRollNo, getStudentByNameAndRollNo } = require("../../services/student.service");
+const {
+  createStudent,
+  getAllStudents,
+  getStudentByRollNo,
+  getStudentByNameAndRollNo,
+  getStudentByEmail,
+} = require("../../services/student.service");
 
 const req = student;
 
@@ -52,6 +58,20 @@ describe("student service", () => {
       expect(Student.findOne).toHaveBeenCalledWith({
         where: { rollNumber, name },
         raw: true,
+      });
+      expect(result).toEqual(studentResponse);
+    });
+  });
+
+  describe("getStudentByEmail", () => {
+    test("should get a student record by email", async () => {
+      const email = "carrie@gmail.com";
+      Student.findOne = jest.fn().mockResolvedValue(studentResponse);
+
+      const result = await getStudentByEmail(email);
+
+      expect(Student.findOne).toHaveBeenCalledWith({
+        where: { email },
       });
       expect(result).toEqual(studentResponse);
     });

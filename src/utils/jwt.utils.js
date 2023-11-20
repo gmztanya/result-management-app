@@ -15,7 +15,7 @@ const verifyJwt = (token) => {
       decodedToken,
     };
   } catch (err) {
-    // console.error(err);
+    console.error(err);
     return {
       valid: false,
       err,

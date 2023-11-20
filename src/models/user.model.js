@@ -21,6 +21,11 @@ const User = sequelize.define("User", {
     type: DataTypes.ENUM(ROLE.TEACHER, ROLE.STUDENT),
     allowNull: false,
   },
+  email: {
+    type: DataTypes.STRING,
+    unique: true,
+    allowNull: false,
+  },
 });
 
 module.exports = User;

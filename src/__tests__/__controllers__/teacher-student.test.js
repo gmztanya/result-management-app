@@ -10,11 +10,17 @@ const {
   getAllStudents,
   getStudentByRollNo,
   getStudentByNameAndRollNo,
+  getStudentByEmail,
 } = require("../../services/student.service");
 const { student, studentResponse } = require("../../__mocks__/student.mocks");
+const { sendMail } = require("../../controllers/student.controller");
+const { nodeMailer } = require("../../utils/nodemailer.utils");
 
 const req = {
   body: student,
+  user: {
+    email: student.email,
+  },
   params: {
     rollNumber: student.rollNumber,
   },
@@ -33,7 +39,9 @@ jest.mock("../../services/student.service", () => ({
   getAllStudents: jest.fn(),
   getStudentByRollNo: jest.fn(),
   getStudentByNameAndRollNo: jest.fn(),
+  getStudentByEmail: jest.fn(),
 }));
+jest.mock("../../utils/nodemailer.utils");
 
 describe("teacher controller", () => {
   beforeEach(() => {
@@ -79,6 +87,18 @@ describe("teacher controller", () => {
     });
 
     describe("given an invalid student object, ", () => {
+      test("should return validation errors and status code of 400 if student object validation fails", async () => {
+        const invalidStudent = { ...student, name: "" };
+        const validationError = [{ name: "Name is required" }];
+
+        const { statusCode, body } = await supertest(app)
+          .post("/teacher/add-student")
+          .set("Authorization", authorization)
+          .send(invalidStudent);
+
+        expect(statusCode).toBe(STATUS_CODES.BAD_REQUEST);
+        expect(body.error).toEqual(validationError);
+      });
       test("should return a status code of 500", async () => {
         getStudentByRollNo.mockRejectedValue(new Error());
         createStudent.mockRejectedValue(new Error());
@@ -86,7 +106,7 @@ describe("teacher controller", () => {
         const { statusCode, body } = await supertest(app)
           .post("/teacher/add-student")
           .set("Authorization", authorization)
-          .send({});
+          .send(student);
 
         expect(statusCode).toBe(STATUS_CODES.SERVER_ERROR);
         expect(body.error).toEqual("Failed to add student.");
@@ -237,7 +257,7 @@ describe("teacher controller", () => {
   });
 });
 
-describe("studnt controller", () => {
+describe("student controller", () => {
   beforeEach(() => {
     authenticateToken.mockImplementation((_req, _res, next) => next());
   });
@@ -284,6 +304,22 @@ describe("studnt controller", () => {
         expect(getStudentByNameAndRollNo).toHaveBeenCalledWith(rollNumber, name);
         expect(statusCode).toBe(STATUS_CODES.SERVER_ERROR);
         expect(body.error).toEqual("Failed to fetch student.");
+      });
+    });
+  });
+
+  describe("POST/send-mail route", () => {
+    describe("given a logged in student", () => {
+      test("should get the student record by email", async () => {
+        const res = {
+          status: jest.fn(() => res),
+          json: jest.fn(),
+        };
+        getStudentByEmail.mockResolvedValue(studentResponse);
+
+        await sendMail(req, res);
+        expect(getStudentByEmail).toHaveBeenCalledWith(student.email);
+        expect(nodeMailer.sendMail).toHaveBeenCalled();
       });
     });
   });

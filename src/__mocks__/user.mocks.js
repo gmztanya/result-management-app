@@ -2,6 +2,7 @@ const user = {
   username: "john123",
   password: "1234",
   userType: "teacher",
+  email: "john@gmail.com",
 };
 
 const userResponse = {

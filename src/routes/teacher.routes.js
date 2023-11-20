@@ -6,10 +6,11 @@ const { authenticateToken } = require("../middleware/auth-token.middleware");
 const { checkUserRole } = require("../middleware/user-guard.middleware");
 
 const teacherController = require("../controllers/teacher.controller");
+const { studentValidationRules, validate } = require("../middleware/validation.middleware");
 
 router.post(
   "/add-student",
-  [authenticateToken, checkUserRole(ROLE.TEACHER)],
+  [authenticateToken, checkUserRole(ROLE.TEACHER), studentValidationRules(), validate],
   teacherController.addStudent,
 );
 

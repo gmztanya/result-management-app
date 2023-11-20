@@ -21,4 +21,16 @@ const getStudentByNameAndRollNo = async (rollNumber, name) => {
   });
 };
 
-module.exports = { createStudent, getAllStudents, getStudentByRollNo, getStudentByNameAndRollNo };
+const getStudentByEmail = async (email) => {
+  return Student.findOne({
+    where: { email },
+  });
+};
+
+module.exports = {
+  createStudent,
+  getAllStudents,
+  getStudentByRollNo,
+  getStudentByNameAndRollNo,
+  getStudentByEmail,
+};

@@ -18,7 +18,7 @@ const addStudent = async (req, res) => {
 
     res.status(STATUS_CODES.RESOURCE_CREATED).json(student);
   } catch (error) {
-    // console.error(error);
+    console.error(error);
     res.status(STATUS_CODES.SERVER_ERROR).json({ error: "Failed to add student." });
   }
 };
@@ -29,7 +29,7 @@ const listStudents = async (req, res) => {
     console.table(students);
     res.status(STATUS_CODES.SUCCESS).json(students);
   } catch (error) {
-    // console.error(error);
+    console.error(error);
     res
       .status(STATUS_CODES.SERVER_ERROR)
       .json({ error: "Failed to fetch list of students." });
@@ -52,7 +52,7 @@ const deleteStudent = async (req, res) => {
       .status(STATUS_CODES.SUCCESS)
       .json(`Student record - ${student.name}-${student.rollNumber} deleted.`);
   } catch (error) {
-    // console.error(error);
+    console.error(error);
     res
       .status(STATUS_CODES.SERVER_ERROR)
       .json({ error: "Failed to delete student record." });
@@ -78,7 +78,7 @@ const editStudent = async (req, res) => {
         `Student record - ${student.name}-${student.rollNumber} edited successfully.`,
       );
   } catch (error) {
-    // console.error(error);
+    console.error(error);
     res
       .status(STATUS_CODES.SERVER_ERROR)
       .json({ error: "Failed to edit student record." });
