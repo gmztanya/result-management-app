@@ -7,7 +7,7 @@ const { checkUserRole } = require("../middleware/user-guard.middleware");
 const ROLE = require("../constants/user.constants");
 const studentController = require("../controllers/student.controller");
 
-router.get(
+router.post(
   "/search",
   [authenticateToken, checkUserRole(ROLE.STUDENT)],
   studentController.getStudentByNameAndRollNo,

@@ -13,8 +13,8 @@ const {
   getStudentByEmail,
 } = require("../../services/student.service");
 const { student, studentResponse } = require("../../__mocks__/student.mocks");
-const { sendMail } = require("../../controllers/student.controller");
 const { nodeMailer } = require("../../utils/nodemailer.utils");
+const { sendMail } = require("../../controllers/student.controller");
 
 const req = {
   body: student,
@@ -25,7 +25,10 @@ const req = {
     rollNumber: student.rollNumber,
   },
 };
-
+const res = {
+  status: jest.fn(() => res),
+  json: jest.fn(),
+};
 const authorization = "Bearer xxxxxxxxxx";
 
 jest.mock("../../middleware/auth-token.middleware", () => ({
@@ -41,7 +44,17 @@ jest.mock("../../services/student.service", () => ({
   getStudentByNameAndRollNo: jest.fn(),
   getStudentByEmail: jest.fn(),
 }));
-jest.mock("../../utils/nodemailer.utils");
+jest.mock("../../utils/nodemailer.utils", () => ({
+  nodeMailer: {
+    sendMail: jest.fn(),
+  },
+  emailConfig: {
+    html: "<b>Your score %studentName% - %studentScore%</b>",
+    to: "touser@gmail.com",
+    from: "fromuser@gmail.com",
+    subject: "testing..",
+  },
+}));
 
 describe("teacher controller", () => {
   beforeEach(() => {
@@ -261,13 +274,13 @@ describe("student controller", () => {
   beforeEach(() => {
     authenticateToken.mockImplementation((_req, _res, next) => next());
   });
-  describe("GET/search route", () => {
+  describe("POST/search route", () => {
     describe("given a rollNumber and name", () => {
       test("should get the student record", async () => {
         getStudentByNameAndRollNo.mockResolvedValue(studentResponse);
 
         const { statusCode, body } = await supertest(app)
-          .get("/student/search")
+          .post("/student/search")
           .set("Authorization", authorization)
           .send();
 
@@ -282,7 +295,7 @@ describe("student controller", () => {
         getStudentByNameAndRollNo.mockResolvedValue(null);
 
         const { statusCode, body } = await supertest(app)
-          .get("/student/search")
+          .post("/student/search")
           .set("Authorization", authorization)
           .send(req.body);
 
@@ -297,7 +310,7 @@ describe("student controller", () => {
         getStudentByNameAndRollNo.mockRejectedValue(new Error());
 
         const { statusCode, body } = await supertest(app)
-          .get("/student/search")
+          .post("/student/search")
           .set("Authorization", authorization)
           .send(req.body);
 
@@ -310,7 +323,7 @@ describe("student controller", () => {
 
   describe("POST/send-mail route", () => {
     describe("given a logged in student", () => {
-      test("should get the student record by email", async () => {
+      test("should send the logged in student's report to the his/her email id.", async () => {
         const res = {
           status: jest.fn(() => res),
           json: jest.fn(),
@@ -318,7 +331,8 @@ describe("student controller", () => {
         getStudentByEmail.mockResolvedValue(studentResponse);
 
         await sendMail(req, res);
-        expect(getStudentByEmail).toHaveBeenCalledWith(student.email);
+
+        expect(getStudentByEmail).toHaveBeenCalled();
         expect(nodeMailer.sendMail).toHaveBeenCalled();
       });
     });

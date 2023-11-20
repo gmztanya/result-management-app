@@ -1,4 +1,7 @@
+const config = require("config");
 const studentService = require("../services/student.service");
+
+const EMAIL_CREDENTIALS = config.get("EMAIL");
 const STATUS_CODES = require("../constants/status-codes.constants");
 
 const { nodeMailer, emailConfig } = require("../utils/nodemailer.utils");
@@ -33,19 +36,18 @@ const sendMail = async (req, res) => {
         });
     }
 
-    const email = { ...emailConfig };
-    email.html = email.html
+    const emailMessage = { ...emailConfig };
+    emailMessage.html = emailMessage.html
       .replace("%studentName%", student.name)
       .replace("%studentScore%", student.score);
 
-    nodeMailer.sendMail(email).then(() => {
-      return res.status(STATUS_CODES.SUCCESS).json({
-        msg: `Email is successfully sent to ${student.email}.`,
-      });
-    }).catch(error => {
-      console.error(error);
-      return res.status(STATUS_CODES.SERVER_ERROR).json({ error });
-    });
+    /** should be replaced with logged in student's email id.
+     * passing the same test gamil account id here for testing as student email ids are dummy ids.
+    */
+    emailMessage.to = EMAIL_CREDENTIALS.USERNAME;
+
+    await nodeMailer.sendMail(emailMessage);
+    return res.status(STATUS_CODES.SUCCESS).json(`Email is successfully sent to ${emailMessage.to}.`);
   } catch (error) {
     console.error(error);
     res.status(STATUS_CODES.SERVER_ERROR).json({ error: "Failed to send email" });

@@ -8,13 +8,8 @@
     "test": "jest --detectOpenHandles --coverage",
     "lint:fix": "eslint --fix **/**/*.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gmztanya/result-management-app.git"
-  },
   "author": "tanya_tg",
   "license": "ISC",
-  "homepage": "https://github.com/gmztanya/result-management-app#readme",
   "dependencies": {
     "config": "^3.3.9",
     "express": "^4.18.2",

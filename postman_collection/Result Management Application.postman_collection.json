@@ -114,7 +114,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\"rollNumber\": \"A0001\",\r\n\"name\": \"mitch\",\r\n\"dateOfBirth\": \"1993-10-10\",\r\n\"score\": \"90\",\r\n\"email\": \"mitch@gmail.com\"\r\n}",
+					"raw": "{\r\n    \"rollNumber\": \"A0001\",\r\n    \"name\": \"mitch\",\r\n    \"dateOfBirth\": \"1993-10-10\",\r\n    \"score\": \"90\",\r\n    \"email\": \"mitch@gmail.com\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -219,11 +219,8 @@
 		},
 		{
 			"name": "Student - search",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [
 					{
 						"key": "Authorization",
