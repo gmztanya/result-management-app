@@ -1,0 +1,290 @@
+{
+	"info": {
+		"_postman_id": "a857eee0-5ab3-4673-ac64-85ac30695366",
+		"name": "Result Management Application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27684763"
+	},
+	"item": [
+		{
+			"name": "User - register user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"username\": \"tony\",\r\n\"password\": \"1234\",\r\n\"userType\": \"teacher\",\r\n\"email\": \"tony@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/register",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth - login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"pm.environment.set(\"authorization\", 'Bearer ' + jsonData.token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"username\": \"tony\",\r\n \"password\": \"1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth - logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"authorization\", '');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/auth/logout",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Teacher - add student",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"rollNumber\": \"A0001\",\r\n\"name\": \"mitch\",\r\n\"dateOfBirth\": \"1993-10-10\",\r\n\"score\": \"90\",\r\n\"email\": \"mitch@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/teacher/add-student",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"teacher",
+						"add-student"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Teacher - list students",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/teacher/list-students",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"teacher",
+						"list-students"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Teacher - delete student",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/teacher/delete-student/A0003",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"teacher",
+						"delete-student",
+						"A0003"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Teacher - edit student",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"score\": \"100\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/teacher/edit-student/A0001",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"teacher",
+						"edit-student",
+						"A0001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Student - search",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"rollNumber\": \"A0001\",\r\n\"name\": \"Mitch\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/student/search",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"student",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Student - send mail",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/student/send-mail",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"student",
+						"send-mail"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
