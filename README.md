@@ -125,12 +125,7 @@ Request Body - (as JSON) sample -
  ```
 #### _2. **POST /student/send-mail**: To email the student score to a particular student_
 Authorization token - required. Added as a header - "Authorization". <br />
-Request Body - (as JSON) sample - 
- ```
-{
-    "email": "mitch@gmail.com",
-}
- ```
+Request Body - (as JSON) sample - not required. Makes use of currently logged in user information.
  
 ## Testing
  Run the test cases:
