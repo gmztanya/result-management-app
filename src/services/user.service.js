@@ -1,10 +1,10 @@
 const User = require("../models/user.model");
 
-const createUser = async (req) => {
+const createUser = (req) => {
   return User.create(req);
 };
 
-const findUserByUsername = async (username) => {
+const findUserByUsername = (username) => {
   return User.findOne({ where: { username } });
 };
 
